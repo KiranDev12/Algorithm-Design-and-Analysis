@@ -6,56 +6,74 @@
 #include <stdlib.h>
 #include <time.h>
 
-int linear_search(int arr[], int n, int x);
+FILE *ptr1;
+FILE *ptr2;
+FILE *ptr3;
 
 int main()
 {
     int size;
-    printf("Enter the size of the array: ");
-    scanf("%d", &size);
-    int arr[size];
-
     int i, x, result;
-
-    srand(time(NULL)); // initialize random seed
-
-    // initialize array with random numbers between 0 and 99
-    for (i = 0; i < size; i++)
+    srand(time(0));
+    int j = 10;
+    ptr1 = fopen("BestCase.txt", "w");
+    ptr2 = fopen("WorstCase.txt", "w");
+    ptr3 = fopen("AvgCase.txt", "w");
+    if (ptr1 == NULL || ptr2 == NULL || ptr3 == NULL)
     {
-        arr[i] = rand() % 100;
+        printf("Error file not generated\n");
+        exit(0);
     }
-    printf("The randomly generated array is: \n");
-    for (i = 0; i < size; i++)
+    while (j != 110)
     {
-        printf("%d\t", arr[i]);
-    }
-    printf("\n\n");
-    // get a random number to search for
-    printf("Enter a number to search for: ");
-    scanf("%d", &x);
+        int arr[j];
+        for (i = 0; i < j; i++)
+            arr[i] = rand() % 100;
+        printf("the randomly generated array is: \n");
+        for (i = 0; i < j; i++)
+            printf("%d\t", arr[i]);
+        printf("\n\n");
 
-    result = linear_search(arr, size, x);
-    if (result == -1)
-    {
-        printf("Element %d not found in the array\n", x);
-    }
-    else
-    {
-        printf("Element %d found at index %d\n", x, result);
-    }
-
-    return 0;
-}
-
-int linear_search(int arr[], int n, int x)
-{
-    int i;
-    for (i = 0; i < n; i++)
-    {
-        if (arr[i] == x)
+        // BEST CASE =>
+        x = arr[0];
+        int k, count = 0;
+        for (k = 0; k < j; k++)
         {
-            return i;
+            count++;
+            if (arr[k] == x)
+            {
+                break;
+            }
         }
+        fprintf(ptr1, "%d\t%d\n", j, count);
+
+        // WORST CASE =>
+        x = -1;
+        count = 0;
+        for (k = 0; k < j; k++)
+        {
+            count++;
+            if (arr[k] == x)
+            {
+                break;
+            }
+        }
+        fprintf(ptr2, "%d\t%d\n", j, count);
+
+        // AVERAGE CASE =>
+        x = arr[j / 2];
+        count = 0;
+        for (k = 0; k < j; k++)
+        {
+            count++;
+            if (arr[k] == x)
+            {
+                break;
+            }
+        }
+        fprintf(ptr3, "%d\t%d\n", j, count);
+
+        j = j + 10;
     }
-    return -1; // element not found
+    return 0;
 }

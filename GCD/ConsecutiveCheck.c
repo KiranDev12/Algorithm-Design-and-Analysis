@@ -12,16 +12,16 @@
 */
 
 #include <stdio.h>
-#include<stdlib.h>
+#include <stdlib.h>
 
 int main()
 {
-    int m, n, t1, t2, answer;
+    int m, n, t1, t2, answer = 1;
     int count = 0;
     printf("Enter two numbers, to find GCD\n");
     scanf("%d%d", &m, &n);
     int t = (m > n) ? n : m;
-    while (t != 1)
+    while (t >= 1)
     {
         count++;
         t1 = m % t;
@@ -31,10 +31,11 @@ int main()
             if (t2 == 0)
             {
                 answer = t;
-                continue;
+                break;
             }
         }
         t = t - 1;
     }
     printf("GCD of the given numbers is %d and count is %d", answer, count);
+    return 0;
 }

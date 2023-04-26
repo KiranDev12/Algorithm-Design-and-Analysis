@@ -1,0 +1,9 @@
+set title 'Linear Search'
+
+set xrange[10:100]
+set yrange[1:100]
+
+set xlabel 'Size of the array'
+set ylabel 'Operation Count'
+
+set style data line
