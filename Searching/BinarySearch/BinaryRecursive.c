@@ -34,7 +34,7 @@ int main()
         int arr[size];
         for (int i = 0; i < size; i++)
         {
-            arr[i] = i;
+            arr[i] = i
         }
         int best = binarySearch(arr, 0, size - 1, arr[(size - 1) / 2]);
         int worst = binarySearch(arr, 0, size - 1, arr[0]);
