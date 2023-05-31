@@ -14,18 +14,7 @@ void main()
 {
 
     int size = 10;
-    FILE *fp1 = NULL, *fp2 = NULL, *fp3 = NULL;
-
-    fp1 = fopen("avgBS.txt", "w");
-    fp2 = fopen("worstBS.txt", "w");
-    fp3 = fopen("bestBS.txt", "w");
-
-    if (fp1 == NULL || fp2 == NULL || fp3 == NULL)
-    {
-        printf("Error!!");
-        exit(1);
-    }
-
+    FILE * fp = fopen("output.txt", "w");
     while (size != 110)
     {
         int count, arr[size], i;
@@ -44,7 +33,7 @@ void main()
         printf("\n\n");
         printf("For average case:\n");
         count = Bubble_sort(arr, size);
-        fprintf(fp1, "%d\t%d\n", size, count);
+        fprintf(fp, "%d\t%d\t", size, count);
 
         // Worst case time complexity
         printf("For Worst case: ");
@@ -54,7 +43,7 @@ void main()
             arr[i] = x--;
         }
         count = Bubble_sort(arr, size);
-        fprintf(fp2, "%d\t%d\n", size, count);
+        fprintf(fp, "%d\t", count);
 
         // Best case time complexity
         printf("For Best case: ");
@@ -65,13 +54,11 @@ void main()
         }
         count = Bubble_sort(arr, size);
 
-        fprintf(fp3, "%d\t%d\n", size, count);
+        fprintf(fp, "%d\n", count);
 
         size += 10;
     }
-    fclose(fp1);
-    fclose(fp2);
-    fclose(fp3);
+    fclose(fp);
 }
 
 int Bubble_sort(int arr[], int n)

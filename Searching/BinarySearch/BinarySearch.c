@@ -1,48 +1,67 @@
-//TODO: Do binary search of an array of size n and file them into best, avg, worst
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 
-int binary_search(int arr[], int n, int x);
+FILE * ptr;
 
-int main()
-{
-    int size = 10;
-    while (size!=110)
-    {
-        int arr[size];
 
-        int i, x, result;
-
-        srand(time(NULL)); // initialize random seed
-
-        // initialize array with random numbers between 0 and 99
-        for (i = 0; i < size; i++)
-        {
-            arr[i] = rand() % 100;
-        }
-        
-        // Best case => 
-
-        
-        size += 10;
-    }
-    
-        
-
-    return 0;
+int BinarySearch(int arr[], int size, int key){
+	int low = 0;
+	int count = 0;
+	int high = size - 1;
+	int mid = (low+high)/2;
+	while(low<=high){
+		count++;
+		mid = (low+high)/2;
+		if(arr[mid]==key){
+			return count;
+		}
+		else if(arr[mid]>key){
+			high=mid-1;
+		}
+		else{
+			low=mid+1;
+		}
+	}
+	return count;
 }
+int main(){
+	int size;
+	int i, x, result;
+	srand(time(0));
+	int j = 10;
+	ptr = fopen("Iterative.txt", "w");
+	if(ptr==NULL){
+		printf("Error file not generated\n");
+		exit(0);
+	}
+	while(j!=110){
+		int arr[j];
+		for(i=0;i<j;i++)
+			arr[i] = i;
+		
+		//BEST CASE =>
+		x = arr[(j-1)/2];
+		int k;
+		int count = BinarySearch(arr, j, x);
+		
+		fprintf(ptr, "%d\t%d\t", j, count);
+		
+		//WORST CASE =>	
+		x = arr[j-1];
+		count = BinarySearch(arr, j, x);
+		
+		fprintf(ptr, "%d\t", count);
 
-int binary_search(int arr[], int n, int x)
-{
-    int i;
-    for (i = 0; i < n; i++)
-    {
-        if (arr[i] == x)
-        {
-            return i;
-        }
-    }
-    return -1; // element not found
+		//AVERAGE CASE =>
+		x = rand()%j;
+		count = BinarySearch(arr, j, x);
+		
+		fprintf(ptr, "%d\n", count);
+		
+		
+		j = j + 10;
+	}
+		return 0;
 }

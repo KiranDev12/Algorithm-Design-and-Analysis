@@ -25,7 +25,7 @@ void selectionSort(int arr[], int n, int * count){
 
 int main(){
 	FILE *fptr;
-	fptr=fopen("count.txt", "w");
+	fptr=fopen("output.txt", "w");
 	for(int n = 10; n<=100; n+=10){
 		int arr[n];
 		srand(time(NULL));
@@ -36,7 +36,7 @@ int main(){
 		}
 		int count=0;
 		selectionSort(arr, n, &count);
-		fprintf(fptr, "%d\t%d", n, count);
+		fprintf(fptr, "%d\t%d\t", n, count);
 
 		//Avg Case
 		for(int i = 0; i<n; i++){
@@ -44,7 +44,7 @@ int main(){
 		}
 		count=0;
 		selectionSort(arr, n, &count);
-		fprintf(fptr, "\t%d",count);
+		fprintf(fptr, "%d\t",count);
 
 		//Worst Case
 		for(int i = 0; i<n; i++){
@@ -52,7 +52,7 @@ int main(){
 		}
 		count=0;
 		selectionSort(arr, n, &count);
-		fprintf(fptr, "\t%d\n", count);
+		fprintf(fptr, "%d\n", count);
 	}
 	fclose(fptr);
 	return 0;
