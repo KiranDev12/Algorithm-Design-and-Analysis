@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 
 # Read the data from the text file
 data = []
-with open('/home/kiran/Desktop/Study/ADA/Lab/Q2/q2b.txt', 'r') as file:
+with open('/home/kiran/Desktop/Study/ADA/Lab/test.txt', 'r') as file:
     lines = file.readlines()
 
 for line in lines:
