@@ -1,77 +1,77 @@
-#include<stdio.h>
-#include<stdlib.h>
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 int count = 0;
-
-void swap(int *a, int *b){
+void swap(int *a, int *b)
+{
     int temp = *a;
     *a = *b;
     *b = temp;
 }
-
-void heapify(int arr[], int n, int i){
+void heapify(int a[], int n, int i)
+{
     int largest = i;
-    int left = 2*i + 1;
-    int right = 2*i + 2;
+    int left = 2 * i;
+    int right = 2 * i + 1;
 
-    
-    while(left < n && arr[largest] < arr[left]){
-        ++count;
+    count++;
+    if (left <= n && a[left] > a[largest])
         largest = left;
-    }
-    while (right < n && arr[largest] < arr[right]){
-        count++;
+
+    if (right <= n && a[right] > a[largest])
         largest = right;
-    }
-    if ( i != largest ){
-        swap(&arr[largest], &arr[i]);
-        heapify(arr, n, largest);
-    }
-}
 
-void heap(int arr[], int n){
-    for(int i = n/2 -1 ; i>-1; --i)
-        heapify(arr, n, i);
-
-    for(int i = n-1; i>-1; --i){
-        swap(&arr[i], &arr[0]);
-        heapify(arr, i, 0);
+    if (largest != i)
+    {
+        swap(a + i, a + largest);
+        heapify(a, n, largest);
     }
 }
 
-void main(){
-    FILE *a, *b, *w;
-    system("rm avg.txt;   rm worst.txt;   rm best.txt");
-    a = fopen("avg.txt", "a");
-    b = fopen("best.txt", "a");
-    w = fopen("worst.txt", "a");
-
-    for(int n = 4; n<=512; n*=2){
-        n++;
-        int arr[n];
-
-        // best case
-        for(int i = 0; i<n; ++i)
-            arr[i] = n-i;
-        heap(arr, n);
-        fprintf(b, "%d  %d\n", n, count);
-        count = 0;
-
-        // worst case
-        for(int i = 0; i<n; ++i)
-            arr[i] = i;
-        heap(arr, n);
-        fprintf(w, "%d  %d\n", n, count);
-        count = 0;
-
-        // avg case
-        for(int i = 0; i<n/2; ++i)
-            arr[i] = rand()%100;
-        heap(arr, n);
-        fprintf(a, "%d  %d\n", n, count);
-        count = 0;
-        n--;
+void heapsort(int a[], int n)
+{
+    int i;
+    // heapification
+    for (i = n / 2; i >= 1; i--)
+        heapify(a, n, i);
+    // replace root with the bottom last element
+    for (i = n; i > 1; i--)
+    {
+        swap(a + 1, a + i);
+        heapify(a, i - 1, 1);
     }
-    fclose(a);  fclose(b);  fclose(w);
-    system("gnuplot -p -c plot.txt");
+}
+
+int main()
+{
+    int *a, i, n;
+    srand(time(0));
+    FILE *fp = fopen("heap.txt", "w");
+    for (n = 4; n <= 512; n *= 2)
+    {
+        a = (int *)malloc((n + 1) * sizeof(int));
+        // Best case
+        count = 0;
+        for (i = 1; i <= n; i++)
+            a[i] = n;
+        heapsort(a, n);
+        fprintf(fp, "%d\t%d\t", n, count);
+
+        // Average Case
+        for (i = 1; i <= n; i++)
+            a[i] = rand() % 100;
+        count = 0;
+        heapsort(a, n);
+        fprintf(fp, "%d\t", count);
+
+        // Worst case
+        for (i = 1; i <= n; i++)
+            a[i] = i;
+        count = 0;
+        heapsort(a, n);
+        fprintf(fp, "%d\n", count);
+        free(a);
+    }
+    fclose(fp);
+    return 0;
 }
