@@ -64,7 +64,7 @@ void main()
 
     printf("Shortest path from %d is:\n", s);
     for (i = 1; i <= n; i++)
-    {
+    { 
         if (s != i)
             printf("%d -> %d = %d\n", s, i, dist[i]); // Added newline character
     }
