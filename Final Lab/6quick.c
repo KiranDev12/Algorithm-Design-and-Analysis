@@ -1,107 +1,107 @@
 #include <stdio.h>
-#include <stdlib.h>
-
+#include<stdlib.h>
+#include<time.h>
 int count = 0;
 
-void swap(int *a, int *b)
-{
-  int temp = *a;
-  *a = *b;
-  *b = temp;
+// Function to swap two elements in an array
+void swap(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
 }
 
-int partition(int arr[], int low, int high)
-{
-  int pivot = arr[low];
-  int i = low;
-  int j = high;
+// Hoare partition function
+int hoarePartition(int arr[], int low, int high) {
+  
+    int i = low, j = high + 1, t = arr[low];
+    do
+    {    
+        do
+        {
+            i++;
+            count++;
+        } while (arr[i] < t && i <= high);
+        do
+        {
+            j--;
+            count++;
+        } while (arr[j] > t && j >= low);
+        swap(&arr[i], &arr[j]);
+    } while (i <= j);
+    swap(&arr[i],&arr[j]);
+    swap(&arr[low],&arr[j]);
+    return j;
+}
 
-  while (i < j)
-  {
-    if (arr[i] > pivot)
-      count++;
-    while (arr[i] <= pivot)
-    {
-      i++;
-      count++;
+
+void generate(int arr[], int begin, int end) {
+    if(begin<end){
+        int middle=(begin+end)/2;
+        generate(arr, begin, middle);
+
+        swap(&arr[begin], &arr[middle]);
+
+        generate(arr, middle + 1, end);
+
     }
-    while (arr[j] > pivot)
-    {
-      j--;
-      count++;
+}
+
+// Quicksort function
+void quicksort(int arr[], int low, int high) {
+    if (low < high) {
+        int split = hoarePartition(arr, low, high);
+        quicksort(arr, low, split-1);
+        quicksort(arr, split+1, high);
     }
-    if (arr[j] <= pivot)
-      count++;
-    swap(&arr[i], &arr[j]);
-  }
-  swap(&arr[i], &arr[j]);
-  swap(&arr[low], &arr[j]);
-  return j;
 }
 
-void quickSort(int arr[], int low, int high)
-{
-  if (low < high)
-  {
-    int pivot = partition(arr, low, high);
-    quickSort(arr, low, pivot - 1);
-    quickSort(arr, pivot + 1, high);
-  }
+// Function to print an array
+void printArray(int arr[], int size) {
+    for (int i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
 }
 
-void bestSwap(int arr[], int l, int r)
-{
-  if (l < r)
-  {
-    int mid = (l + r) / 2;
-    bestSwap(arr, l, mid - 1);
-    swap(&arr[l], &arr[mid]);
-    bestSwap(arr, mid + 1, r);
-  }
-}
+int main() {
+    FILE *fp=fopen("quick.txt","w");
+    int n=8;
 
-void printArray(int *arr, int n)
-{
-  for (int i = 0; i < n - 1; i++)
-  {
-    printf("%d ", arr[i]);
-  }
-  printf("\n\n");
-}
+    if(fp==NULL)
+    printf("Error!!");
 
-void main()
-{
-  FILE *fp = fopen("Plot.txt", "w");
-  int n = 2, result1, result2, result3;
-  while (n <= 512)
-  {
-    int arr[n], i;
-    for (i = 0; i < n; i++)
-      arr[i] = i + 1;
+    srand(time(NULL));
+    while(n!=1024)
+    {
+        int arr[n];
+        for(int i=0;i<n;i++)
+            arr[i]=i+1;
 
-    // Worst Case
-    count = 0;
-    quickSort(arr, 0, n - 1);
-    result3 = count;
+        //Worst
+        count=0;
+        quicksort(arr,0,n-1);
+        fprintf(fp,"%d\t%d\t",n,count);
 
-    // Best Case
-    count = 0;
-    bestSwap(arr, 0, n - 1);
-    // for(i=0;i<n;i++)
-    // 	arr[i]=1;
-    printArray(arr, n - 1);
-    quickSort(arr, 0, n - 1);
-    result1 = count;
+       //best
+        count=0;
+      // generate(arr,0,n-1);
+      
+       for(int i=0;i<n;i++)
+       arr[i]=2;
 
-    // Avg Case
-    count = 0;
-    for (i = 0; i < n; i++)
-      arr[i] = rand() % 100;
-    quickSort(arr, 0, n - 1);
-    result2 = count;
-    fprintf(fp, "%d\t%d\t%d\t%d\n", n, result1, result2, result3);
+        quicksort(arr,0,n-1);
+        fprintf(fp,"%d\t",count);
 
-    n *= 2;
-  }
-  fclose(fp);
+       
+         for(int i=0;i<n;i++)
+         {   arr[i]=rand()%n;}
+         count=0;
+
+        quicksort(arr,0,n-1);
+        fprintf(fp,"%d\n",count); 
+
+        n*=2;
+    }
+    fclose(fp);
+    return 0;
 }

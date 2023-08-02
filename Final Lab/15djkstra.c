@@ -1,75 +1,71 @@
 #include <stdio.h>
-#include <stdlib.h>
 
-int cost[10][10], n, visited[10] = {0}, opc = 0;
-int distance[10], parent[10];
+void dijkstra(int n, int cost[10][10], int s, int dist[10])
+{
+    int i, v, count = 1, min, visited[10];
 
-void createGraph()
-{
-    int i, j;
-    printf("Enter no. of vertices: ");
-    scanf("%d", &n);
-    printf("Enter Weight Matrix: \n");
-    for (i = 1; i <= n; ++i)
-    {
-        for (j = 1; j <= n; j++)
-        {
-            scanf("%d", &cost[i][j]);
-            if (cost[i][j] == 0)
-                cost[i][j] = 1000;
-        }
-    }
-}
-void Dijkstra(int start)
-{
-    int count, mindistance, nextnode, i, j;
+    // initialising
     for (i = 1; i <= n; i++)
     {
-        distance[i] = cost[start][i];
-        parent[i] = start;
         visited[i] = 0;
+        dist[i] = cost[s][i]; // if no edge exists between s and i then cost[s][i] = 999
     }
 
-    distance[start] = 0;
-    visited[start] = 1;
-    count = 1;
+    visited[s] = 1;
+    dist[s] = 0; // distance from s to s is 0
 
     while (count < n)
     {
-        mindistance = 999;
+        min = 999;
+
+        // finding the vertex with minimum distance
+        for (i = 1; i <= n; i++)
+        {
+            if (dist[i] < min && !visited[i])
+            {
+                min = dist[i];
+                v = i;
+            }
+        }
+        visited[v] = 1;
+        count++;
 
         for (i = 1; i <= n; i++)
         {
-            opc++;
-            if (distance[i] < mindistance && !visited[i])
-            {
-                mindistance = distance[i];
-                nextnode = i;
-            }
+            if (dist[i] > dist[v] + cost[v][i])
+                dist[i] = dist[v] + cost[v][i];
         }
-        visited[nextnode] = 1;
-        for (i = 1; i <= n; i++)
-            if (!visited[i])
-                if (mindistance + cost[nextnode][i] < distance[i])
-                {
-                    distance[i] = mindistance + cost[nextnode][i];
-                    parent[i] = nextnode;
-                }
-        count++;
     }
-    for (i = 1; i <= n; i++)
-        if (i != start&&distance[i]<1000)
-        {
-            printf("%d to %d Distance : %d\n", start, i, distance[i]);
-        }
 }
+
 void main()
 {
-    int source;
-    createGraph();
-    printf("Enter the source : ");
-    scanf("%d", &source);
-    printf("Minimum Distance from Source(%d) to other Vertices\n", source);
-    Dijkstra(source);
-    printf("Operation Count : %d\n", opc);
+    int i, j, n, s, cost[10][10], dist[10]; // dist stores the distance from source vertex to the given vertex
+    // cost matrix stores the cost of each edge(weight) and if no edge exists then the user enters 0, and is then converted to 999(which represents infinity)
+
+    printf("Enter the total number of nodes: ");
+    scanf("%d", &n);
+
+    
+    printf("Read the cost matrix:\n");
+    for (i = 1; i <= n; i++)
+    {
+        for (j = 1; j <= n; j++)
+        { // Corrected loop bound
+            // scanf("%d", &cost[i][j]);
+            if (cost[i][j] == 0)
+                cost[i][j] = 999;
+        }
+    }
+
+    printf("Enter the source vertex: ");
+    scanf("%d", &s);
+    dijkstra(n, cost, s, dist);
+
+    printf("Shortest path from %d is:\n", s);
+    for (i = 1; i <= n; i++)
+    {
+        if (s != i)
+            printf("%d -> %d = %d\n", s, i, dist[i]); // Added newline character
+    }
 }

@@ -1,129 +1,127 @@
-#include <stdio.h>
-#include <stdlib.h>
-void merge(int arr[], int left[], int right[], int leftSize, int rightSize, int* count) {
-    int i = 0;
-    int j = 0;
-    int k = 0;
+#include<stdio.h>
+#include<stdlib.h>
 
-    while (i < leftSize && j < rightSize) {
-        (*count)++;
-        if (left[i] <= right[j]) {
-            arr[k] = left[i];
-            i++;
-        } else {
-            arr[k] = right[j];
-            j++;
-        }
-        k++;
-    }
+void mergeSort(int[],int,int,int*);
+void merge(int[],int,int,int,int*);
 
-    while (i < leftSize) {
-        arr[k] = left[i];
-        i++;
-        k++;
-    }
-
-    while (j < rightSize) {
-        arr[k] = right[j];
-        j++;
-        k++;
-    }
+int join(int arr1[], int left1[], int right1[], int l1, int m1, int r1)
+{
+   int i; // So used in second loop
+   for (i = 0; i <= m1 - l1; i++)
+      arr1[i] = left1[i];
+   for (int j = 0; j < r1 - m1; j++)
+      arr1[i + j] = right1[j];
 }
 
-void mergeSort(int arr[], int size,int* count) {
-    if (size < 2)
-        return;
-
-    int mid = size / 2;
-    int left[mid];
-    int right[size - mid];
-
-    for (int i = 0; i < mid; i++)
-        left[i] = arr[i];
-    for (int i = mid; i < size; i++)
-        right[i - mid] = arr[i];
-
-    mergeSort(left, mid,count);
-    mergeSort(right, size - mid,count);
-
-    // Merge the sorted subarrays
-    merge(arr, left, right, mid, size - mid,count);
+int split(int arr1[], int left1[], int right1[], int l1, int m1, int r1){
+   for (int i = 0; i <= m1 - l1; i++)
+      left1[i] = arr1[i * 2];
+   for (int i = 0; i < r1 - m1; i++)
+      right1[i] = arr1[i * 2 + 1];
 }
 
-void mergeProcessed(int arr[], int left[], int right[], int leftSize, int rightSize) {
-    int i,j;
-    for(i=0;i<leftSize;i++){
-        arr[i]=left[i];
-    }
-    for(i=leftSize,j=0;i<leftSize+rightSize;i++,j++){
-        arr[i]=right[j];
-    }
+int generateWorstCase(int arr1[], int l1, int r1){
+   if (l1 < r1){
+      int m1 = l1 + (r1 - l1) / 2;
+      // creating two auxillary arrays
+      int left1[m1 - l1 + 1];
+      int right1[r1 - m1];
+      // Storing alternate array elements in left
+      // and right subarray
+      split(arr1, left1, right1, l1, m1, r1);
+      // Recursing first and second halves
+      generateWorstCase(left1, l1, m1);
+      generateWorstCase(right1, m1 + 1, r1);
+      // joining left and right subarray
+      join(arr1, left1, right1, l1, m1, r1);
+   }
 }
-void generateWorstCase(int arr[],int n) {
-    int i, j;
-    int mid = n/2;
-    int temp[n];
-    for (i = 0, j = 0; i < mid; i++, j += 2)
-        temp[i] = arr[j];
-    for (i = mid, j = 1; i < n; i++, j += 2)
-        temp[i] = arr[j];
-    for (i = 0; i < n; i++)
-        arr[i] = temp[i];
+
+int main()
+{  
+   FILE*fp = fopen("mrgeSrtRes.txt","w");
+   
+   int n = 4;
+   
+   while(n!=128)
+   {
+      int arr[n], i, count=0, *p=&count;
+      for(i=0; i<n; i++)
+         arr[i] = i+1;   // keeping both the sub arrays in ascending order
+         
+      mergeSort(arr,0,n-1,p);
+      fprintf(fp,"%d\t%d\t",n,*p); // best case
+     
+      *p=0;
+      generateWorstCase(arr,0,n-1);
+      mergeSort(arr,0,n-1,p);
+      fprintf(fp,"%d\t",*p);   //worst case
+     
+      for(i=0; i<n; i++)
+         arr[i] = rand()%n;
+      *p=0;
+      mergeSort(arr,0,n-1,p);
+      fprintf(fp,"%d\n",*p);    //average case
+     
+     
+      n*=2;      
+   }
+   
+   fclose(fp);
+   
+   return 0;
 }
-void generate(int arr[], int size) {
-    if (size < 2)
-        return;
-    generateWorstCase(arr,size);
-    int mid = size / 2;
-    int left[mid];
-    int right[size - mid];
-    for (int i = 0; i < mid; i++)
-        left[i] = arr[i];
-    for (int i = mid; i < size; i++)
-        right[i - mid] = arr[i];
-    generate(left, mid);
-    generate(right, size - mid);
-    mergeProcessed(arr, left, right, mid, size - mid);
+
+void merge(int arr[],int low, int high, int mid,int* count)
+{
+   int i = low, j = mid+1, k = low; int b[110];
+   
+   
+   while(i<=mid && j<=high)
+   {
+      *count+=1;
+      if(arr[i] < arr[j])
+      {
+         b[k] = arr[i];
+         i++;
+      }
+     
+      else
+      {
+         b[k] = arr[j];
+         j++;
+      }
+     
+      k++;
+
+   }
+   
+   while(i<=mid)
+   {
+      b[k] = arr[i];
+      i++;
+      k++;
+   }
+   
+   while(j<=high)
+   {
+      b[k] = arr[j];
+      j++;
+      k++;    
+   }
+   
+   int m;
+   for(m=low; m<=high; m++)
+      arr[m] = b[m];
 }
-int main() {
-    int i, j, result1, result2, result3;
-    j = 8;
-    FILE *ptr = fopen("Plot.txt", "w");
-    if (ptr == NULL)
-    {
-        printf("Error file not generated\n");
-        exit(0);
-    }
-    while (j <= 32762)
-    {
-        int arr[j];
 
-        // BEST CASE
-        int count = 0;
-        for (i = 0; i < j; i++)
-            arr[i] = i;
-        mergeSort(arr, j, &count);
-        result1 = count;
-        
-
-        // WORST CASE
-        count = 0;
-        generate(arr,j);
-        mergeSort(arr, j, &count);
-        result3 = count;
-        
-        
-        // AVERAGE CASE
-        count = 0;
-        for (i = 0; i < j; i++)
-            arr[i] = rand()%j;
-        mergeSort(arr, j, &count);
-        result2 = count;
-
-
-        fprintf(ptr, "%d\t\t%d\t%d\t%d\n", j, result1, result2, result3);
-        j *= 2;
-    }
-    fclose(ptr);
-    return 0;
+void mergeSort(int arr[], int low, int high, int*count)
+{
+   if(low == high)
+     return;
+   int mid = (high+low)/2;
+   mergeSort(arr,low,mid,count);
+   mergeSort(arr,mid+1,high,count);
+   
+   merge(arr,low,high,mid,count);
 }

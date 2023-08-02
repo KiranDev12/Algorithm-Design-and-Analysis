@@ -49,7 +49,7 @@ void create_graph() {
     }
 }
 int main() {
-    int i, v, count, Queue[MAX], indeg[MAX];
+    int i, v, count, stack[MAX], indeg[MAX];
     create_graph();
     for (i = 0; i < n; i++) {
         indeg[i] = indegree(i);
@@ -59,7 +59,7 @@ int main() {
     count = 0;
     while (!isEmpty_queue() && count < n) {
         v = Dequeue();
-        Queue[++count] = v;
+        stack[++count] = v;
         for (i = 0; i < n; i++) {
             if (AdjMat[v][i] == 1) {
                 AdjMat[v][i] = 0;
@@ -75,7 +75,7 @@ int main() {
     }
     printf("Vertices in Topological order are:\n");
     for (i = 1; i <= count; i++)
-        printf("%d-->", Queue[i]);
+        printf("%d-->", stack[i]);
     printf("\n");
     return 0;
 }

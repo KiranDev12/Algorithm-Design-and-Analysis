@@ -1,38 +1,55 @@
 #include <stdio.h>
-int main()
-{
-    int cost[10][10], visited[10] = {0}, i, j, n, no_e = 1, min, a, b, min_cost = 0;
-    printf("Enter number of nodes ");
-    scanf("%d", &n);
-    printf("Enter cost in form of adjacency matrix\n");
-    for (i = 1; i <= n; i++)
-        for (j = 1; j <= n; j++)
-        {
-            scanf("%d", &cost[i][j]);
-            if (cost[i][j] == 0)
-                cost[i][j] = 1000;
-        }
-    visited[1] = 1;
-    while (no_e < n)
-    {
-        min = 1000;
-        for (i = 1; i <= n; i++)
-            for (j = 1; j <= n; j++)
-                if (cost[i][j] < min && visited[i] != 0)
-                {
-                    min = cost[i][j];
-                    a = i;
-                    b = j;
-                }
+#include <stdlib.h>
 
-        if (visited[b] == 0)
-        {
-            printf("\n%d to %d  cost=%d", a, b, min);
-            min_cost = min_cost + min;
-            no_e++;
-        }
-        visited[b] = 1;
-        cost[a][b] = cost[b][a] = 1000;
-    }
-    printf("\nminimum weight is %d", min_cost);
+int cost[10][10], n, min_cost = 0, min, a, b, visited[10] = {0}, edges = 0;
+
+void createGraph()
+{
+	int i, j;
+	printf("Enter no. of vertices: ");
+	scanf("%d", &n);
+	printf("Enter cost Matrix: \n");
+	for (i = 0; i < n; ++i)
+	{
+		for (j = 0; j < n; j++)
+		{
+			scanf("%d", &cost[i][j]);
+			if (cost[i][j] == 0)
+				cost[i][j] = 1000;
+		}
+	}
+}
+
+void main()
+{
+	int i, j;
+	createGraph();
+
+	visited[0] = 1;
+	while (edges < n - 1) // in a minimum spanning tree(MST), edges=vertices-1
+	{
+		min = 1000;
+		for (i = 0; i < n; i++) // traversing the list of vertices and searching for src vertices i.e traversed/visited vertices
+		{
+			if (visited[i]) // checking if the source vertex is visited, as an outgoing edge is possible only when the src vertex is traversed
+			{
+				for (j = 0; j < n; j++) // finding destination vertex
+				{
+					if (cost[i][j] < min && !visited[j]) // ensuring that destination vertex is unvisited else if both src and destination vertices are visited then it'll result in a cycle
+					{
+						min = cost[i][j];
+						a = i;
+						b = j;
+					}
+				}
+			}
+		}
+
+		printf("%d -> %d : Cost-%d\n", a, b, min);
+		min_cost += min;
+		visited[b] = 1;
+		edges++;
+	}
+
+	printf("Minimum Cost: %d\n", min_cost);
 }

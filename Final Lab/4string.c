@@ -26,7 +26,7 @@ int main()
     int j = 10, x, result1=0, result2=0, result3=0,N=100;
     char T[N];
     srand(time(NULL));
-    FILE *ptr = fopen("Plot.txt", "w");
+    FILE *ptr = fopen("string.txt", "w");
     if (ptr == NULL)
     {
         printf("Error opening file\n");

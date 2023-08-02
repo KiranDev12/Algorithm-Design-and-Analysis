@@ -30,7 +30,7 @@ int main()
     int size;
     int i, x, k, result1, result2, result3;
     int j = 10;
-    ptr = fopen("Plot.txt", "w");
+    ptr = fopen("bubble.txt", "w");
     if (ptr == NULL)
     {
         printf("Error file not generated\n");

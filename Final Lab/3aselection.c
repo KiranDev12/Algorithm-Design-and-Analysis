@@ -25,7 +25,7 @@ int main()
 {
     int i, j, result1, result2, result3;
     j = 10;
-    FILE *ptr = fopen("Plot.txt", "w");
+    FILE *ptr = fopen("selection.txt", "w");
     if (ptr == NULL)
     {
         printf("Error file not generated\n");
@@ -56,7 +56,7 @@ int main()
         // WORST CASE =>
         count = 0;
         for (i = 0; i < j; i++)
-            arr[i] = j-i;
+            arr[i] = j - i;
         selection_sort(arr, j, &count);
         result3 = count;
 

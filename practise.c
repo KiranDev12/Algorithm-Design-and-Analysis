@@ -1,72 +1,65 @@
-#include<stdio.h>
-#include<stdlib.h>
-
-int count = 0;
-
-void swap(int *a, int *b){
-    int temp = *a;
-    *a = *b;
-    *b = temp;
-}
-
-void heapify(int arr[], int n, int i){
-    int largest = i;
-    int left = 2*i + 1;
-    int right = 2*i + 2;
-
-    ++count;
-    while(left < n && arr[largest] < arr[left])
-        largest = left;
-    while (right < n && arr[largest] < arr[right])
-        largest = right;
-
-    if ( i != largest ){
-        swap(&arr[largest], &arr[i]);
-        heapify(arr, n, largest);
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <time.h>
+int StringMatch(char text[], char pattern[],int M,int N)
+{
+    int count = 0;
+    for (int i = 0; i <= N - M; i++)
+    {
+        int j = 0;
+        while (j < M && (pattern[j] == text[i + j]))
+        {
+            j++;
+            count++;
+        }
+        if (j == M)
+        {
+            return count;
+        }
+        count++;
     }
+    return count;
 }
-
-void heap(int arr[], int n){
-    for(int i = n/2 -1 ; i>-1; --i)
-        heapify(arr, n, i);
-
-    for(int i = n-1; i>-1; --i){
-        swap(&arr[i], &arr[0]);
-        heapify(arr, i, 0);
+int main()
+{
+    int j = 10, x, result1=0, result2=0, result3=0,N=100;
+    char T[N];
+    srand(time(NULL));
+    FILE *ptr = fopen("string.txt", "w");
+    if (ptr == NULL)
+    {
+        printf("Error opening file\n");
+        exit(0);
     }
-}
 
-void main(){
-    FILE *a, *b, *w;
-    system("rm avg.txt;   rm worst.txt;   rm best.txt");
-    a = fopen("avg.txt", "a");
-    b = fopen("best.txt", "a");
-    w = fopen("worst.txt", "a");
-
-    for(int n = 4; n<=1024; n*=2){
-        int arr[n];
-
+    for (int i = 0; i < N; i++)
+    {
+        T[i] = 'a';
+    }
+    while (j <= N)
+    {
+        char* P=malloc(sizeof(char)*j);
+        for (int i = 0; i < j; i++)
+        {
+            P[i] = 'a';
+        }
         // best case
-        for(int i = 0; i<n; ++i)
-            arr[i] = n -i;
-        heap(arr, n);
-        fprintf(b, "%d  %d\n", n, count);
-        count = 0;
+        result1 = StringMatch(T, P,j,N);
 
         // worst case
-        for(int i = 0; i<n; ++i)
-            arr[i] = i;
-        heap(arr, n);
-        fprintf(w, "%d  %d\n", n, count);
-        count = 0;
+        P[j - 1] = 'b';
+        result3 = StringMatch(T, P,j,N);
 
         // avg case
-        for(int i = 0; i<n/2; ++i)
-            arr[i] = rand()%100;
-        heap(arr, n);
-        fprintf(a, "%d  %d\n", n, count);
-        count = 0;
+        x = rand() % j;
+        P[x] = 'b';
+        result2 = StringMatch(T, P,j,N);
+
+        fprintf(ptr, "%d\t%d\t%d\t%d\n", j, result1, result2, result3);
+        j += 10;
+        free(P);
     }
-    fclose(a);  fclose(b);  fclose(w);
-    system("gnuplot -p -c plot.txt");
+    fclose(ptr);
+    return 0;
 }
